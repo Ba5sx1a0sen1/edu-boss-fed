@@ -4,13 +4,14 @@
     class="login-form"
     ref="form"
     :model="form"
+    :rules="rules"
     label-position="top"
     label-width="80px">
     <p class="login-title">Edu Boss</p>
-    <el-form-item label="手机号">
+    <el-form-item label="手机号" prop="phone">
       <el-input v-model="form.phone"></el-input>
     </el-form-item>
-    <el-form-item label="密码">
+    <el-form-item label="密码" prop="password">
       <el-input type="password" v-model="form.password"></el-input>
     </el-form-item>
     <el-form-item>
@@ -23,6 +24,9 @@
 import Vue from 'vue'
 import request from '@/utils/request'
 import qs from 'qs'
+import { Form } from 'element-ui'
+
+import { login } from '@/services/user'
 
 export default Vue.extend({
   name: 'LoginPage',
@@ -31,6 +35,16 @@ export default Vue.extend({
       form: {
         phone: '',
         password: ''
+      },
+      rules: {
+        phone: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { pattern: /^1\d{10}$/, message: '请输入正确的手机号', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur' }
+        ]
       },
       isLoginLoading: false
     }
@@ -41,23 +55,23 @@ export default Vue.extend({
       // 2. 验证通 -> 发起请求
       // 3. 处理请求 成功跳转 失败提示
       this.isLoginLoading = true
-      const { data } = await request({
-        method: 'POST',
-        url: '/front/user/login',
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded'
-        },
-        data: qs.stringify(this.form)
-      })
-      // 失败提示
-      if (data.state !== 1) {
-        return this.$message.error(data.message)
+      try {
+        await (this.$refs.form as Form).validate()
+
+        const { data } = await login(this.form)
+        // 失败提示
+        if (data.state !== 1) {
+          this.$message.error(data.message)
+        } else {
+          // 成功跳转
+          this.$router.push({
+            name: 'home'
+          })
+          this.$message.success('登录成功')
+        }
+      } catch (e) {
+        console.log(e, '登录失败')
       }
-      // 成功跳转
-      this.$router.push({
-        name: 'home'
-      })
-      this.$message.success('登录成功')
       this.isLoginLoading = false
     }
   }
