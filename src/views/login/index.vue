@@ -14,7 +14,7 @@
       <el-input type="password" v-model="form.password"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-button class="login-btn" type="primary" @click="onSubmit">登录</el-button>
+      <el-button :loading="isLoginLoading" class="login-btn" type="primary" @click="onSubmit">登录</el-button>
     </el-form-item>
   </el-form>
 </div>
@@ -31,7 +31,8 @@ export default Vue.extend({
       form: {
         phone: '',
         password: ''
-      }
+      },
+      isLoginLoading: false
     }
   },
   methods: {
@@ -39,6 +40,7 @@ export default Vue.extend({
       // 1. 表单验证
       // 2. 验证通 -> 发起请求
       // 3. 处理请求 成功跳转 失败提示
+      this.isLoginLoading = true
       const { data } = await request({
         method: 'POST',
         url: '/front/user/login',
@@ -56,6 +58,7 @@ export default Vue.extend({
         name: 'home'
       })
       this.$message.success('登录成功')
+      this.isLoginLoading = false
     }
   }
 })
