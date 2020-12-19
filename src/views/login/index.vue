@@ -21,6 +21,8 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
+import request from '@/utils/request'
+import qs from 'qs'
 
 export default Vue.extend({
   name: 'LoginPage',
@@ -33,8 +35,27 @@ export default Vue.extend({
     }
   },
   methods: {
-    onSubmit () {
-      console.log('submit!')
+    async onSubmit () {
+      // 1. 表单验证
+      // 2. 验证通 -> 发起请求
+      // 3. 处理请求 成功跳转 失败提示
+      const { data } = await request({
+        method: 'POST',
+        url: '/front/user/login',
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded'
+        },
+        data: qs.stringify(this.form)
+      })
+      // 失败提示
+      if (data.state !== 1) {
+        return this.$message.error(data.message)
+      }
+      // 成功跳转
+      this.$router.push({
+        name: 'home'
+      })
+      this.$message.success('登录成功')
     }
   }
 })
