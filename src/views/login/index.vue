@@ -64,6 +64,9 @@ export default Vue.extend({
           this.$message.error(data.message)
         } else {
           // 成功跳转
+          // 登录状态，记录，可以全局访问(记录到Vuex容器中)
+          // 通过路由拦截器拦截页面是否需要登录访问
+          this.$store.commit('setUser', data.content)
           this.$router.push({
             name: 'home'
           })
