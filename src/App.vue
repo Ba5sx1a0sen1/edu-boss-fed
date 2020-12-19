@@ -1,7 +1,5 @@
 <template>
   <div id="app">
-    <h1>Stub</h1>
-    <p>{{a}}</p>
     <!-- 根路由 -->
     <router-view/>
   </div>
