@@ -12,7 +12,7 @@ export default new Vuex.Store({
     setUser (state, payload) {
       state.user = JSON.parse(payload)
       // 为了防止页面刷新数据丢失，我们需要对 user 持久化
-      window.localStorage.setItem('`user`', payload)
+      window.localStorage.setItem('user', payload)
     }
   },
   actions: {

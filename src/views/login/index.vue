@@ -22,8 +22,6 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
-import request from '@/utils/request'
-import qs from 'qs'
 import { Form } from 'element-ui'
 
 import { login } from '@/services/user'
@@ -67,9 +65,7 @@ export default Vue.extend({
           // 登录状态，记录，可以全局访问(记录到Vuex容器中)
           // 通过路由拦截器拦截页面是否需要登录访问
           this.$store.commit('setUser', data.content)
-          this.$router.push({
-            name: 'home'
-          })
+          this.$router.push(this.$route.query.redirect as string || '/')
           this.$message.success('登录成功')
         }
       } catch (e) {
