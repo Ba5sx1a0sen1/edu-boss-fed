@@ -1,13 +1,12 @@
 <template>
-  <div class="advert-space">广告位管理</div>
+  <h1>广告位管理</h1>
 </template>
-
 <script lang="ts">
 import Vue from 'vue'
-
 export default Vue.extend({
-  name: 'AdvertSpaceIndex'
+  name: 'AdvertSpacePage'
 })
 </script>
+<style lang="scss" scoped>
 
-<style lang="scss" scoped></style>
+</style>
