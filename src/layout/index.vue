@@ -26,6 +26,7 @@ export default Vue.extend({
 .outerContainer {
   min-height: 100vh;
   min-width: 980px;
+  max-height: 100vh;
 }
 
 .el-header {
