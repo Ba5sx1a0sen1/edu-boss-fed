@@ -10,7 +10,7 @@ export const createOrUpdateMenu = (data: any) => {
 
 export const getEditMenuInfo = (id: string | number = -1) => {
   return request({
-    method: 'POST',
+    method: 'GET',
     url: '/boss/menu/getEditMenuInfo',
     params: {
       id
