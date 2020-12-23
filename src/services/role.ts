@@ -1,9 +1,25 @@
 // 资源请求接口
 import request from '@/utils/request'
 
-export const getRoles = () => {
+export const getRoles = (data: any) => {
   return request({
-    method: 'GET',
-    url: '/boss/role/all'
+    method: 'POST',
+    url: '/boss/role/getRolePages',
+    data
+  })
+}
+
+export const deleteRole = (id: string | number) => {
+  return request({
+    method: 'DELETE',
+    url: `/boss/role/${id}`
+  })
+}
+
+export const createOrUpdate = (data: any) => {
+  return request({
+    method: 'POST',
+    url: `/boss/role/saveOrUpdate`,
+    data
   })
 }

@@ -12,7 +12,7 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class="card-body-wrapper" style="display:flex;flex-direction:column">
+        <el-button @click="dialogVisible = true">添加角色</el-button>
         <el-table
           :data="roles"
           v-loading="isLoading"
@@ -25,7 +25,7 @@
           <el-table-column
             prop="name"
             label="角色名称"
-            width="280">
+            width="200">
           </el-table-column>
           <el-table-column
             prop="description"
@@ -45,14 +45,14 @@
               <el-button type="text">分配资源</el-button>
               <el-button
                 type="text"
-                @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                @click="handleEdit(scope.row)">编辑</el-button>
               <el-button
                 type="text"
-                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                @click="handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
-        <!-- <el-pagination
+        <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="form.current"
@@ -62,28 +62,42 @@
           :total="totalCount"
           :disabled="isLoading"
         >
-        </el-pagination> -->
-      </div>
+        </el-pagination>
     </el-card>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+    >
+      <create-or-edit
+        @success="onSuccess"
+        @cancel="dialogVisible = false"
+      />
+    </el-dialog>
   </div>
 </template>
 <script lang="ts">
 import Vue from 'vue'
-import { getRoles } from '@/services/role'
+import { deleteRole, getRoles } from '@/services/role'
 import { Form } from 'element-ui'
+import CreateOrEdit from './CreateOrEdit.vue'
 
 export default Vue.extend({
   name: 'RoleList',
+  components: {
+    CreateOrEdit
+  },
   data () {
     return {
       roles: [],
       form: {
         name: '',
         current: 1, // 当前哪页
-        size: 50 // 每页大小
+        size: 10 // 每页大小
       },
       totalCount: 0,
-      isLoading: false
+      isLoading: false,
+      dialogVisible: false
     }
   },
   created () {
@@ -92,9 +106,9 @@ export default Vue.extend({
   methods: {
     async loadRoles () {
       this.isLoading = true
-      const { data } = await getRoles()
-      this.roles = data.data
-      this.totalCount = data.data.length
+      const { data } = await getRoles(this.form)
+      this.roles = data.data.records
+      this.totalCount = data.data.total
       this.isLoading = false
     },
     onSubmit () {
@@ -103,12 +117,24 @@ export default Vue.extend({
     },
     onReset () {
       (this.$refs.form as Form).resetFields()
+      this.loadRoles()
     },
-    handleEdit (index: number, row: any) {
-      console.log(index, row);
+    handleEdit (role: any) {
+      console.log(role);
     },
-    handleDelete (index: number, row: any) {
-      console.log(index, row);
+    async handleDelete (role: any) {
+      try {
+        await this.$confirm(`确认删除角色：${role.name}？`, '删除提示')
+        await deleteRole(role.id)
+        this.$message.success('删除成功')
+        this.loadRoles()
+      } catch (err) {
+        if (err && err.response) {
+          this.$message.error('删除失败，请重试')
+        } else {
+          this.$message.info('取消删除')
+        }
+      }
     },
     handleSizeChange (val: number) {
       // 改变页大小 获取对应页数的第一页
@@ -120,6 +146,10 @@ export default Vue.extend({
       // 请求获取对应页码的数据
       this.form.current = val // 修改查询页码
       this.loadRoles()
+    },
+    onSuccess () {
+      this.dialogVisible = false // 关闭对话框
+      this.loadRoles() // 重新加载数据列表
     }
   }
 })
