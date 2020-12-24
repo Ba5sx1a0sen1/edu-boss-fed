@@ -23,3 +23,10 @@ export const createOrUpdate = (data: any) => {
     data
   })
 }
+
+export const getRoleById = (id: string | number) => {
+  return request({
+    method: 'GET',
+    url: `/boss/role/${id}`
+  })
+}

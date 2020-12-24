@@ -23,11 +23,20 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { createOrUpdate } from '@/services/role'
+import { createOrUpdate, getRoleById } from '@/services/role'
 import { Form } from 'element-ui'
 
 export default Vue.extend({
   name: 'CreateOrEditRole',
+  props: {
+    roleId: {
+      type: [String, Number]
+    },
+    isEdit: {
+      type: Boolean,
+      default: false
+    }
+  },
   data () {
     return {
       rules: {
@@ -42,6 +51,14 @@ export default Vue.extend({
       }
     }
   },
+
+  created () {
+    // 如果是编辑操作，根据角色ID预加载数据
+    if (this.isEdit) {
+      this.loadRole()
+    }
+  },
+
   methods: {
     async onSubmit () {
       try {
@@ -52,6 +69,10 @@ export default Vue.extend({
       } catch (e) {
         console.log('操作失败', e)
       }
+    },
+    async loadRole () {
+      const { data } = await getRoleById(this.roleId)
+      this.role = data.data // 顺便会将id保存到role中，所以onSubmit方法直接发请求即可
     }
   }
 })

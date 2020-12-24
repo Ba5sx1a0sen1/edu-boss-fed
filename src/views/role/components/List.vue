@@ -12,19 +12,24 @@
           </el-form-item>
         </el-form>
       </div>
-        <el-button @click="dialogVisible = true">添加角色</el-button>
+        <el-button @click="handleAdd">添加角色</el-button>
         <el-table
           :data="roles"
           v-loading="isLoading"
           style="width: 100%;margin-bottom:20px;flex:1;overflow-y:auto;">
           <el-table-column
-            type="index"
+            prop="id"
             label="编号"
             width="80">
           </el-table-column>
           <el-table-column
             prop="name"
             label="角色名称"
+            width="200">
+          </el-table-column>
+          <el-table-column
+            prop="code"
+            label="角色编码"
             width="200">
           </el-table-column>
           <el-table-column
@@ -65,13 +70,16 @@
         </el-pagination>
     </el-card>
     <el-dialog
-      title="提示"
+      :title="isEdit ? '编辑角色' : '添加角色'"
       :visible.sync="dialogVisible"
       width="30%"
     >
       <create-or-edit
+        v-if="dialogVisible"
         @success="onSuccess"
         @cancel="dialogVisible = false"
+        :role-id="roleId"
+        :isEdit="isEdit"
       />
     </el-dialog>
   </div>
@@ -97,7 +105,9 @@ export default Vue.extend({
       },
       totalCount: 0,
       isLoading: false,
-      dialogVisible: false
+      dialogVisible: false,
+      roleId: null,
+      isEdit: false
     }
   },
   created () {
@@ -120,7 +130,9 @@ export default Vue.extend({
       this.loadRoles()
     },
     handleEdit (role: any) {
-      console.log(role);
+      this.dialogVisible = true
+      this.roleId = role.id
+      this.isEdit = true
     },
     async handleDelete (role: any) {
       try {
@@ -150,6 +162,10 @@ export default Vue.extend({
     onSuccess () {
       this.dialogVisible = false // 关闭对话框
       this.loadRoles() // 重新加载数据列表
+    },
+    handleAdd () {
+      this.isEdit = false
+      this.dialogVisible = true
     }
   }
 })
