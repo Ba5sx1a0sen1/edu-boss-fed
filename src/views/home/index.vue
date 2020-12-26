@@ -1,5 +1,9 @@
 <template>
-  <h1>首页</h1>
+  <div>
+    <el-card>
+      首页
+    </el-card>
+  </div>
 </template>
 
 <script lang="ts">
