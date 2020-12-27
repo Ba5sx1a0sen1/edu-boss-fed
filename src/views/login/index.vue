@@ -12,7 +12,7 @@
       <el-input v-model="form.phone"></el-input>
     </el-form-item>
     <el-form-item label="密码" prop="password">
-      <el-input type="password" v-model="form.password"></el-input>
+      <el-input @keydown.enter="onSubmit" type="password" v-model="form.password"></el-input>
     </el-form-item>
     <el-form-item>
       <el-button :loading="isLoginLoading" class="login-btn" type="primary" @click="onSubmit">登录</el-button>
