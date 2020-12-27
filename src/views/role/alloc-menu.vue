@@ -43,8 +43,8 @@ export default Vue.extend({
       checkedKeys: []
     }
   },
-  created () {
-    this.loadMenus()
+  async created () {
+    await this.loadMenus()
     this.loadRoleMenus()
   },
   methods: {
