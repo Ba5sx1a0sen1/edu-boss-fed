@@ -7,13 +7,14 @@
       <el-form
         ref="form"
         label-width="70px"
-        label-position="left"
+        label-position="right"
         :model="filterParams"
+        :inline="true"
       >
         <el-form-item label="课程名称" prop="courseName">
           <el-input v-model="filterParams.courseName"></el-input>
         </el-form-item>
-        <el-form-item label="状态" prop="status">
+        <el-form-item label="上架状态" prop="status">
           <el-select v-model="filterParams.status">
             <el-option label="全部" value=""></el-option>
             <el-option label="上架" value="1"></el-option>
